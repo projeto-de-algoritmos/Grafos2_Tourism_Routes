@@ -1,6 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.conf import settings
+from django.core.paginator import Paginator,PageNotAnInteger,EmptyPage
 
 from maps.models import TouristAttraction
 from maps.utils import center_geolocation
@@ -22,3 +23,15 @@ def map_view(request):
         'map.html',
         {'attractions': attractions, 'median_lat': median_lat, 'median_lng': median_lng, 'api_key': mapbox_api_key}
     )
+
+def select_attraction(request):
+    attractions = TouristAttraction.objects.all()
+
+    return render(
+        request,
+        'user_attractions.html',
+        {'attractions': attractions}
+    )
+
+def cancel_attraction(request, pk):
+    return redirect('/attractions')
