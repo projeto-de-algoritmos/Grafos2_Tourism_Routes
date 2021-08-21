@@ -20,7 +20,7 @@ class Command(BaseCommand):
         df_attractions = pd.read_csv(csv_filename, nrows=qty_attractions)
 
         # Create latitude and longitude from the_geom column in dataset
-        df_attractions[['LAT','LNG']] = df_attractions['the_geom'].str.extract(r'POINT\s\((-\d{2}\.\d*)\s(\d{2}\.\d*)')
+        df_attractions[['LNG', 'LAT']] = df_attractions['the_geom'].str.extract(r'POINT\s\((-\d{2}\.\d*)\s(\d{2}\.\d*)')
 
         model_instances = [
             TouristAttraction(
