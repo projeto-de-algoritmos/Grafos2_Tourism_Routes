@@ -24,7 +24,7 @@ def map_view(request):
         {'attractions': attractions, 'median_lat': median_lat, 'median_lng': median_lng, 'api_key': mapbox_api_key}
     )
 
-def select_attraction(request):
+def list_attractions(request):
     attractions = TouristAttraction.objects.all()
 
     return render(
@@ -33,5 +33,15 @@ def select_attraction(request):
         {'attractions': attractions}
     )
 
-def cancel_attraction(request, pk):
+def remove_attraction(request, pk):
+    attraction = TouristAttraction.objects.get(pk=pk)
+    attraction.selected = False
+    attraction.save()
+    return redirect('/attractions')
+
+
+def select_attraction(request, pk):
+    attraction = TouristAttraction.objects.get(pk=pk)
+    attraction.selected = True
+    attraction.save()
     return redirect('/attractions')
