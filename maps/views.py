@@ -69,14 +69,30 @@ def test(request):
                 [float(attraction.latitude), float(attraction.longitude)]
             )
             names.append(attraction.name)
+
+        median_lat, median_lng = center_geolocation(coords)
+        mapbox_api_key = settings.MAPBOX_API_KEY
+
         graph_coords, graph_edges = build_graph(coords)
         all_paths, shortest_path = testando_shortest_path(graph_coords, graph_edges)
-        
 
-        convert_integer_to_string_path(names, all_paths)
-        shortest_path_weight = list(shortest_path.keys())[0]
-        shortest_path_converted = all_paths[shortest_path_weight]
-        return HttpResponse("Here's the text of the Web page.")
+        geometries = []
+        list_shortest_path = list(shortest_path.values())[0]
+
+        #for index, attraction_identifier in enumerate(list_shortest_path[:-1]):
+        #    current, next_ = attraction_identifier, list_shortest_path[index + 1]
+        #    geometries.append((current, next_,))
+        #    print(graph_edges[(current, next_,)])
+
+        #convert_integer_to_string_path(names, all_paths)
+        #shortest_path_weight = list(shortest_path.keys())[0]
+        #shortest_path_converted = all_paths[shortest_path_weight]
+
+        return render(
+            request,
+            'map.html',
+            {'attractions': attractions, 'median_lat': median_lat, 'median_lng': median_lng, 'api_key': mapbox_api_key}
+        )
     else:
         messages.add_message(request, messages.ERROR, 'Selecione ao menos uma atração para exibí-la no mapa.')
         return redirect('/')

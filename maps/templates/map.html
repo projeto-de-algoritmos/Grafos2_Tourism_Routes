@@ -2,7 +2,8 @@
 <!doctype html>
 <html>
     <head>
-         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+        <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
         integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
         crossorigin=""/>
         <link rel="stylesheet" href="{% static 'map.css' %}">
@@ -10,11 +11,12 @@
         <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
         integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
         crossorigin=""></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-polylinedecorator/1.1.0/leaflet.polylineDecorator.min.js" integrity="sha512-2oK40N5b+8g4Fhp1rfdtmNaroXsh7tFN4OY6++9lB/Hb+uLQWmn0SSAXvnQfbn8BP8qtpri2YQLaFGpyzKUHow==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        <script src="{% static 'drawArrows.js' %}"></script>
-        <!--<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
-        <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
-        <script src="{% static 'leaflet-arrowheads.js' %}"></script> -->
+        <!--<script src="{% static 'drawArrows.js' %}"></script>-->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
+        <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+        <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
+        <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+
     </head>
 
     <body>
@@ -31,25 +33,83 @@
                 zoomOffset: -1,
                 accessToken: '{{api_key}}'
             }).addTo(mymap);
-            coordsArray = []
+            var coordsArray = []
+
+            var greenIcon = new L.Icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowSize: [41, 41]
+            })
+            var blueIcon = new L.Icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowSize: [41, 41]
+            })
+            var redIcon = new L.Icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowSize: [41, 41]
+            })
+
             {% for attraction in attractions %}
-                var marker = new L.marker(
-                    [{{attraction.latitude}}, {{attraction.longitude}}],
-                    {
-                        title: "{{ attraction.name }}"
-                    }
-                ).bindTooltip(
-                    "{{ attraction.name }} ({{ forloop.counter }})", 
-                    {
-                        permanent: true, 
-                        direction: 'right'
-                    }
+                coordsArray.push({
+                    coords: [{{attraction.latitude}}, {{attraction.longitude}}],
+                    name: "{{ attraction.name }}",
+                }
                 )
-                marker.addTo(mymap)
-                coordsArray.push([{{attraction.latitude}}, {{attraction.longitude}}])
             {% endfor %}
-            var polyline = L.polyline(coordsArray).addTo(mymap)//.arrowheads( {frequency: 'endonly', size: '10%'})
-            L.featureGroup(getArrows(coordsArray, 'red', {{attractions.count}} ,mymap)).addTo(mymap);
+
+            routingCoords = coordsArray.map(function (currentElement) {
+                return L.latLng(currentElement.coords[0], currentElement.coords[1]);
+            });
+            L.Routing.control({
+                waypoints: routingCoords,
+                routeWhileDragging: false,
+                draggableWaypoints: false,
+                addWaypoints: false,
+                createMarker: function (i, waypoint, n) {
+                    var counter = i + 1
+                    if (i === 0){
+                        var customIcon = greenIcon
+                    }
+                    else if (i === coordsArray.length - 1){
+                        var customIcon = redIcon
+                    }
+                    else{
+                        var customIcon = blueIcon
+                    }
+
+                    const marker = L.marker(waypoint.latLng, {
+                        draggable: true,
+                        bounceOnAdd: false,
+                        bounceOnAddOptions: {
+                            duration: 1000,
+                            height: 800,
+                            function() {
+                            (bindPopup(myPopup).openOn(map))
+                            }
+                        },
+                        icon: customIcon
+                    }).bindTooltip(
+                        coordsArray[i].name + "(" + counter + ")", 
+                        {
+                            permanent: true, 
+                            direction: 'right'
+                        }
+                    );
+                    return marker;
+                }
+            }).addTo(mymap);
+
         </script>
     </body>
 </html>
