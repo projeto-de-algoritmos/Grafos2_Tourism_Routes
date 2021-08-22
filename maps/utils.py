@@ -1,7 +1,5 @@
-from math import cos, sin, asin, atan2, sqrt, radians, degrees
+from math import cos, sin, atan2, sqrt, radians, degrees
 
-def _hsin(theta):
-    return pow(sin(theta/2), 2)
 
 def center_geolocation(geolocations):
     """
@@ -14,7 +12,7 @@ def center_geolocation(geolocations):
     y = 0
     z = 0
 
-    for lat, lon in geolocations:
+    for lat, lon, name in geolocations:
         lat = float(radians(lat))
         lon = float(radians(lon))
         x += cos(lat) * cos(lon)

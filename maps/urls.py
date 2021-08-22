@@ -7,5 +7,4 @@ urlpatterns = [
     path('attractions/remove/<str:pk>/', views.remove_attraction, name='remove_attraction'),
     path('map/', views.map_view, name='map_attractions'),
     path('', views.home, name='home'),
-    path('test/', views.test, name='test'),
 ]

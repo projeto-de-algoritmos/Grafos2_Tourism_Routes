@@ -2,19 +2,9 @@ from collections import defaultdict
 from math import sqrt
 from maps.client import MapboxClient
 
-# Adds "names" to coordinates to use as keys for edge detection
-def name_coords(coords):
-    coord_count = 0
-    for coord in coords:
-        coord_count += 1
-        coord.append(coord_count)
-    return coords
-
-
 # Creates a weighted and undirected graph
 # Returns named coordinates and their connected edges as a dictonary
 def build_graph(coords):
-    coords = name_coords(coords)
     graph = defaultdict(list)
     edges = {}
     mapbox_client = MapboxClient()
@@ -35,7 +25,6 @@ def build_graph(coords):
 # Returns a path to all nodes with least weight as a list of names
 # from a specific node
 def shortest_path(node_list, edges, start):
-    neighbor = 0
     unvisited = []
     visited = []
     total_weight = 0
@@ -60,13 +49,15 @@ def shortest_path(node_list, edges, start):
         visited.append(current_node)
     return visited, total_weight
 
-def testando_shortest_path(graph_coords, graph_edges):
+def dijkstra(graph_coords, graph_edges):
     shortest_path_taken = {}
     shortest_path_weight = 0
     all_paths = {}
+    graph_coords_without_first_position = graph_coords[1:]
 
-    for index, node in enumerate(graph_coords):
-        path, weight = shortest_path(graph_coords, graph_edges, index + 1)
+    for index, node in enumerate(graph_coords_without_first_position):
+        attraction_name = node[2]
+        path, weight = shortest_path(graph_coords, graph_edges, attraction_name)
         print('--------------------------------------')
         print("Path", index + 1, "=", path)
         print("Weight =", weight)
@@ -84,11 +75,3 @@ def testando_shortest_path(graph_coords, graph_edges):
     print("The shortest path to all nodes is:", shortest_path_taken)
     print("The weight of the path is:", shortest_path_weight)
     return all_paths, shortest_path_taken
-
-def convert_integer_to_string_path(attraction_names, paths):
-    for weight, path in paths.items():
-        converted_attractions = []
-        for attraction_int in path:
-            attraction_name_index = 0 if attraction_int == 1 else attraction_int - 1
-            converted_attractions.append(attraction_names[attraction_name_index])
-        paths[weight] = converted_attractions
