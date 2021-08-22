@@ -10,6 +10,11 @@
         <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
         integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
         crossorigin=""></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-polylinedecorator/1.1.0/leaflet.polylineDecorator.min.js" integrity="sha512-2oK40N5b+8g4Fhp1rfdtmNaroXsh7tFN4OY6++9lB/Hb+uLQWmn0SSAXvnQfbn8BP8qtpri2YQLaFGpyzKUHow==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="{% static 'drawArrows.js' %}"></script>
+        <!--<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+        <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+        <script src="{% static 'leaflet-arrowheads.js' %}"></script> -->
     </head>
 
     <body>
@@ -26,7 +31,7 @@
                 zoomOffset: -1,
                 accessToken: '{{api_key}}'
             }).addTo(mymap);
-
+            coordsArray = []
             {% for attraction in attractions %}
                 var marker = new L.marker(
                     [{{attraction.latitude}}, {{attraction.longitude}}],
@@ -34,15 +39,17 @@
                         title: "{{ attraction.name }}"
                     }
                 ).bindTooltip(
-                    "{{ attraction.name }}", 
+                    "{{ attraction.name }} ({{ forloop.counter }})", 
                     {
                         permanent: true, 
                         direction: 'right'
                     }
                 )
                 marker.addTo(mymap)
-
+                coordsArray.push([{{attraction.latitude}}, {{attraction.longitude}}])
             {% endfor %}
+            var polyline = L.polyline(coordsArray).addTo(mymap)//.arrowheads( {frequency: 'endonly', size: '10%'})
+            L.featureGroup(getArrows(coordsArray, 'red', {{attractions.count}} ,mymap)).addTo(mymap);
         </script>
     </body>
 </html>
