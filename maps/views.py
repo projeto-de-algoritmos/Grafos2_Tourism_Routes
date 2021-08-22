@@ -6,6 +6,7 @@ from django.contrib import messages
 
 from maps.models import TouristAttraction
 from maps.utils import center_geolocation
+from maps.graph_utils import build_graph, testando_shortest_path, convert_integer_to_string_path
 
 
 def map_view(request):
@@ -57,3 +58,25 @@ def home(request):
         request,
         'home.html'
     )
+
+def test(request):
+    attractions = TouristAttraction.objects.filter(selected=True)
+    coords = []
+    names = []
+    if attractions:
+        for attraction in attractions:
+            coords.append(
+                [float(attraction.latitude), float(attraction.longitude)]
+            )
+            names.append(attraction.name)
+        graph_coords, graph_edges = build_graph(coords)
+        all_paths, shortest_path = testando_shortest_path(graph_coords, graph_edges)
+        
+
+        convert_integer_to_string_path(names, all_paths)
+        shortest_path_weight = list(shortest_path.keys())[0]
+        shortest_path_converted = all_paths[shortest_path_weight]
+        return HttpResponse("Here's the text of the Web page.")
+    else:
+        messages.add_message(request, messages.ERROR, 'Selecione ao menos uma atração para exibí-la no mapa.')
+        return redirect('/')
