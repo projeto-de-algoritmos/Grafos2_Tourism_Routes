@@ -18,6 +18,13 @@
   </head>
   <body>
     {% include "navbar.html" %}
+    <ul class="messages">
+        {% for message in messages %}
+          <div class="alert alert-danger" role="alert">
+            {{ message }}
+          </div>
+        {% endfor %}
+    </ul>
     <div class="container">
       <h1>Rotas turísticas</h1>
       <p class="lh-1">Verifique a página de atrações turísticas disponíveis para selecionar as atrações que deseja visitar na cidade de Nova Iorque, após isso veja qual o caminho mais curto para visitar todas as atrações!</p><p>

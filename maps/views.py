@@ -12,12 +12,20 @@ from maps.graph_utils import build_graph, dijkstra
 
 def list_attractions(request):
     attractions = TouristAttraction.objects.all().order_by('-selected')
-
-    return render(
-        request,
-        'user_attractions.html',
-        {'attractions': attractions}
-    )
+    if attractions:
+        return render(
+            request,
+            'user_attractions.html',
+            {'attractions': attractions}
+        )
+    else:
+        messages.add_message(
+            request,
+            messages.ERROR,
+            'É necessário existir atrações na base de dados para poder selecioná-las. '
+            'Verifique se já foi feita a importação do arquivo de atrações turísticas para a base de dados.'
+        )
+        return redirect('/')
 
 def remove_attraction(request, pk):
     attraction = TouristAttraction.objects.get(pk=pk)
@@ -42,7 +50,7 @@ def map_view(request):
     attractions = TouristAttraction.objects.filter(selected=True)
     coords = []
     names = []
-    if attractions:
+    if attractions and attractions.count() > 1:
         for attraction in attractions:
             coords.append(
                 [float(attraction.latitude), float(attraction.longitude), attraction.name]
@@ -80,6 +88,17 @@ def map_view(request):
             'map.html',
             {'attractions': ordered_paths, 'fastest_path_string': mark_safe(fastest_path_string),  'median_lat': median_lat, 'median_lng': median_lng, 'api_key': mapbox_api_key}
         )
+    elif attractions.count() == 1:
+        messages.add_message(
+            request,
+            messages.ERROR,
+            'É necessário selecionar mais de uma atração para traçar o menor caminho entre elas.'
+        )
+        return redirect('/')
     else:
-        messages.add_message(request, messages.ERROR, 'Selecione ao menos uma atração para exibí-la no mapa.')
+        messages.add_message(
+            request,
+            messages.ERROR,
+            'Selecione ao menos uma atração para verificar o menor caminho para visitar todas as atrações. '
+        )
         return redirect('/')
