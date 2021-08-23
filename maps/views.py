@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.conf import settings
 from django.core.paginator import Paginator,PageNotAnInteger,EmptyPage
 from django.contrib import messages
+from django.utils.safestring import mark_safe
 
 from maps.models import TouristAttraction
 from maps.utils import center_geolocation
@@ -55,9 +56,16 @@ def map_view(request):
         all_paths, shortest_path = dijkstra(graph_coords, graph_edges)
 
         geometries = []
-        list_shortest_path = list(shortest_path.values())[0]
+        shortest_path_distance = list(shortest_path.keys())[0]
+        shortest_path_attractions = list(shortest_path.values())[0]
         ordered_paths = []
-        for attraction_name in list_shortest_path:
+        fastest_path_string = (
+            f'O caminho mais rápido percorre uma distância aproximada de <strong>{round(shortest_path_distance/1000, 2)}</strong> quilômetros '
+            f'ao percorrer as seguintes atrações: {shortest_path[shortest_path_distance][0]}'
+        )
+        for i, attraction_name in enumerate(shortest_path_attractions):
+            if i:
+                fastest_path_string += f', <strong>{attraction_name}</strong>'
             attraction = TouristAttraction.objects.filter(name=attraction_name).first()
             ordered_paths.append(
                 {
@@ -66,11 +74,11 @@ def map_view(request):
                     'name': attraction.name,
                 }
             )
-
+        fastest_path_string
         return render(
             request,
             'map.html',
-            {'attractions': ordered_paths, 'median_lat': median_lat, 'median_lng': median_lng, 'api_key': mapbox_api_key}
+            {'attractions': ordered_paths, 'fastest_path_string': mark_safe(fastest_path_string),  'median_lat': median_lat, 'median_lng': median_lng, 'api_key': mapbox_api_key}
         )
     else:
         messages.add_message(request, messages.ERROR, 'Selecione ao menos uma atração para exibí-la no mapa.')

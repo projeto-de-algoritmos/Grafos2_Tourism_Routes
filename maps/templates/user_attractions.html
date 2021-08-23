@@ -18,45 +18,47 @@
   </head>
   <body>
     {% include "navbar.html" %}
-    <h1>Seleção de atrações turísticas</h1>
+    <div class="container">
+      <h1>Seleção de atrações turísticas</h1>
 
-    <table class="table caption-top">
-      <caption>Seleção de atrações turísticas</caption>
-      <thead>
-        <tr>
-          <th scope="col"></th>
-          <th scope="col">Cidade</th>
-          <th scope="col">Atração</th>
-          <th scope="col">Atração já Escolhida</th>
-          <th scope="col">Ação</th>
-        </tr>
-      </thead>
-      <tbody>
-        {%for attraction in attractions%}
+      <table class="table caption-top">
+        <caption>Seleção de atrações turísticas</caption>
+        <thead>
           <tr>
-            <th scope="row">{{ forloop.counter}}</th>
-            <td>{{attraction.city}}</td>
-            <td>{{attraction.name}}</td>
-            <td>
-                {% if attraction.selected %}
-                    <i class="bi bi-check-square" style="color:green"></i>
-                {% else %}
-                    <i class="bi bi-x-lg" style="color:red"></i>
-                {% endif %}
-            </td>
-            <td>
-                {% if attraction.selected %}
-                    <a href="#" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-attraction-id="{{attraction.id}}" data-bs-attraction-name="{{attraction.name}}" data-bs-target="#removeAttractionModal">Retirar atração</a>
-                {% else %}
-                    <a href="#" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-attraction-id="{{attraction.id}}" data-bs-attraction-name="{{attraction.name}}" data-bs-target="#selectAttractionModal">Selecionar atração</a>
-                {% endif %}
-            </td>
-
-
+            <th scope="col"></th>
+            <th scope="col">Cidade</th>
+            <th scope="col">Atração</th>
+            <th scope="col">Atração já Escolhida</th>
+            <th scope="col">Ação</th>
           </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {%for attraction in attractions%}
+            <tr>
+              <th scope="row">{{ forloop.counter}}</th>
+              <td>{{attraction.city}}</td>
+              <td>{{attraction.name}}</td>
+              <td>
+                  {% if attraction.selected %}
+                      <i class="bi bi-check-square" style="color:green"></i>
+                  {% else %}
+                      <i class="bi bi-x-lg" style="color:red"></i>
+                  {% endif %}
+              </td>
+              <td>
+                  {% if attraction.selected %}
+                      <a href="#" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-attraction-id="{{attraction.id}}" data-bs-attraction-name="{{attraction.name}}" data-bs-target="#removeAttractionModal">Retirar atração</a>
+                  {% else %}
+                      <a href="#" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-attraction-id="{{attraction.id}}" data-bs-attraction-name="{{attraction.name}}" data-bs-target="#selectAttractionModal">Selecionar atração</a>
+                  {% endif %}
+              </td>
+
+
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
 
     <!-- Modal select attraction -->
     <div class="modal fade" id="selectAttractionModal" tabindex="-1" aria-labelledby="selectAttractionModalLabel" aria-hidden="true">
