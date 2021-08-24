@@ -10,8 +10,8 @@ class Command(BaseCommand):
     help = 'Build graph from wikipedia page links using Kevin Bacon as starting node'
 
     def add_arguments(self, parser):
-        parser.add_argument("--qty-cities", type=int,
-                            help="number of cities to be searched within a page")
+        parser.add_argument("--qty-attractions", type=int,
+                            help="number of attractions to be loaded")
 
     def handle(self, *args, **kwargs):
         qty_attractions = kwargs["qty_attractions"] if "qty_attractions" in kwargs else 100

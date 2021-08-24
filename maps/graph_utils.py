@@ -2,8 +2,7 @@ from collections import defaultdict
 from math import sqrt
 from maps.client import MapboxClient
 
-# Creates a weighted and undirected graph
-# Returns named coordinates and their connected edges as a dictonary
+
 def build_graph(coords):
     graph = defaultdict(list)
     edges = {}
@@ -22,8 +21,6 @@ def build_graph(coords):
     return coords, edges
 
 
-# Returns a path to all nodes with least weight as a list of names
-# from a specific node
 def shortest_path(node_list, edges, start):
     unvisited = []
     visited = []
@@ -58,9 +55,6 @@ def dijkstra(graph_coords, graph_edges):
     for index, node in enumerate(graph_coords_without_first_position):
         attraction_name = node[2]
         path, weight = shortest_path(graph_coords, graph_edges, attraction_name)
-        print('--------------------------------------')
-        print("Path", index + 1, "=", path)
-        print("Weight =", weight)
         all_paths[weight] = path
         if index == 0:
             shortest_path_weight = weight
@@ -71,7 +65,4 @@ def dijkstra(graph_coords, graph_edges):
                 del shortest_path_taken[previous_shortest_path_taken]
             shortest_path_weight = weight
             shortest_path_taken[weight] = path
-    print('--------------------------------------')
-    print("The shortest path to all nodes is:", shortest_path_taken)
-    print("The weight of the path is:", shortest_path_weight)
     return all_paths, shortest_path_taken

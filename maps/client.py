@@ -19,6 +19,5 @@ class MapboxClient(object):
         response = requests.get(directions_endpoint)
         response_json = response.json()
         distance = response_json['routes'][0]['distance']
-        #geometry = response_json['routes'][0]['geometry']
-        return distance#, geometry
+        return distance
         
