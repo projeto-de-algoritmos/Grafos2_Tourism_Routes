@@ -7,7 +7,7 @@ from django.utils.safestring import mark_safe
 
 from maps.models import TouristAttraction
 from maps.utils import center_geolocation
-from maps.graph_utils import build_graph, dijkstra
+from maps.graph_utils import build_graph, calculate_shortest_path
 
 
 def list_attractions(request):
@@ -61,7 +61,7 @@ def map_view(request):
         mapbox_api_key = settings.MAPBOX_API_KEY
 
         graph_coords, graph_edges = build_graph(coords)
-        all_paths, shortest_path = dijkstra(graph_coords, graph_edges)
+        all_paths, shortest_path = calculate_shortest_path(graph_coords, graph_edges)
 
         geometries = []
         shortest_path_distance = list(shortest_path.keys())[0]

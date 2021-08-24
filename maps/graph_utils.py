@@ -21,7 +21,7 @@ def build_graph(coords):
     return coords, edges
 
 
-def shortest_path(node_list, edges, start):
+def dijkstra(node_list, edges, start):
     unvisited = []
     visited = []
     total_weight = 0
@@ -46,7 +46,7 @@ def shortest_path(node_list, edges, start):
         visited.append(current_node)
     return visited, total_weight
 
-def dijkstra(graph_coords, graph_edges):
+def calculate_shortest_path(graph_coords, graph_edges):
     shortest_path_taken = {}
     shortest_path_weight = 0
     all_paths = {}
@@ -54,7 +54,7 @@ def dijkstra(graph_coords, graph_edges):
 
     for index, node in enumerate(graph_coords_without_first_position):
         attraction_name = node[2]
-        path, weight = shortest_path(graph_coords, graph_edges, attraction_name)
+        path, weight = dijkstra(graph_coords, graph_edges, attraction_name)
         all_paths[weight] = path
         if index == 0:
             shortest_path_weight = weight
