@@ -15,9 +15,9 @@ O Tourism_Routes tem como objetivo traçar a menor rota possível entre todas as
 ## Screenshots
 1. Página inicial da aplicação
    ![home](imgs/home.png)
-2. Páginas disponíveis
+2. Atrações disponíveis
    ![attractions](imgs/attractions.png)
-3. Caminho do grafo iniciando pela página do Kevin Bacon
+3. Menor caminho das atrações disponíveis
    ![shortest_path](imgs/shortest_path.png)
 
 ## Instalação 
