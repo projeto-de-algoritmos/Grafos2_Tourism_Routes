@@ -55,12 +55,18 @@ Carregando dados:
 $ unzip dump.zip # Comando para extrair arquivos .zip em ambientes linux
 $ python manage.py loaddata new_york_attractions.json
 ```
-**Importante: Para o mapa ser renderizado com sucesso e as requisições para o Mapbox funcionarem corretamente, deve ser gerado um `access_token` ao se cadastrar no site do Mapbox. Após finalizar seu cadastro no Mapbox será possível visualizar o seu `access_token`, caso tenha dificuldades acesse essa página de ajuda do Mapbox para maiores informações**
 
 Suba o servidor Django com o comando abaixo:
 ```sh
 $ python manage.py runserver
 ```
+
+### Token do mapbox
+
+Para o mapa ser renderizado com sucesso e as requisições para o Mapbox funcionarem corretamente, deve ser gerado um `access_token` ao se cadastrar no site do Mapbox.
+
+Após finalizar seu cadastro no Mapbox será possível visualizar o seu `access_token`, caso tenha dificuldades acesse essa página de ajuda do Mapbox para maiores informações
+
 
 ## Uso 
 
